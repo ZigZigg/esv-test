@@ -70,9 +70,9 @@ export const filterWarrantyStatus:FilterOption[] = [
 
 export const listFilters: FilterListType[] = [
     {
-        key: 'country',
-        placeholder: 'Select country',
-        options: filterCountryOptions
+        key: 'type',
+        placeholder: 'Select type',
+        options: filterTypeOptions
     },
     {
         key: 'status',
@@ -80,19 +80,19 @@ export const listFilters: FilterListType[] = [
         options: filterStatusOptions
     },
     {
-        key: 'type',
-        placeholder: 'Select type',
-        options: filterTypeOptions
-    },
-    {
-        key: 'department',
-        placeholder: 'Select Department',
-        options: filterDeparmentOptions
+        key: 'country',
+        placeholder: 'Select country',
+        options: filterCountryOptions
     },
     {
         key: 'eolStatus',
         placeholder: 'Select EOL Status',
         options: filterEolStatus
+    },
+    {
+        key: 'department',
+        placeholder: 'Select Department',
+        options: filterDeparmentOptions
     },
     {
         key: 'warrantyStatus',

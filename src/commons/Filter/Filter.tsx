@@ -31,33 +31,33 @@ const CommonFilter: React.FC<Props> = ({ options, placeholder, filterKey, disabl
 
   const componentRef = useRef<HTMLDivElement>(null);
   const initSizeRef = useRef(0)
+  const hiddenRef = useRef(false)
+
   useLayoutEffect(() => {
     if (disableResize) return
+    const updateFilterStatus = (isHide: boolean) => {
+      setHidden(isHide)
+      hiddenRef.current = isHide
+      dispatch({
+        type: 'updatePopupFilterList',
+        payload: {
+          type: isHide ? 'add' : 'remove',
+          key: filterKey
+        },
+      })
+    }
     const updateSize = () => {
       if (componentRef.current) {
         const { right, width } = componentRef.current.getBoundingClientRect();
         if (!initSizeRef.current) {
           initSizeRef.current = width
         }
-        const distance = window.innerWidth - right;
+        const margin = hiddenRef.current ? 5 : 0
+        const distance = window.innerWidth - right - margin;
         if (distance <= 300) {
-          setHidden(true)
-          dispatch({
-            type: 'updatePopupFilterList',
-            payload: {
-              type: 'add',
-              key: filterKey
-            },
-          })
+          updateFilterStatus(true)
         } else if (initSizeRef.current && distance > (initSizeRef.current + 300)) {
-          setHidden(false)
-          dispatch({
-            type: 'updatePopupFilterList',
-            payload: {
-              type: 'remove',
-              key: filterKey
-            },
-          })
+          updateFilterStatus(false)
         }
       }
     };
