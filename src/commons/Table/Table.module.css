@@ -1,0 +1,19 @@
+.container{
+    width: 100%;
+    border: 1px solid #b6b6b6;
+    border-radius: 4px;
+}
+
+.container table{
+    width: 100%;
+}
+
+.column{
+    border-bottom: 1px solid #b6b6b6;
+    height: 34px;
+}
+
+.row{
+    text-align: center;
+    height: 50px;
+}
