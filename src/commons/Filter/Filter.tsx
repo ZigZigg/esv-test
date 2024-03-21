@@ -1,7 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import classes from './Filter.module.css'
 import { BsChevronCompactDown } from "react-icons/bs";
 import { useStoreContext } from '../../providers/StoreProvider';
+import { useCalculateResize } from '../../hooks/useCalculateResize';
 export type FilterOption = {
   value: string | number;
   label: string;
@@ -16,7 +17,6 @@ type Props = {
 
 const CommonFilter: React.FC<Props> = ({ options, placeholder, filterKey, disableResize }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [hidden, setHidden] = useState<boolean>(false)
   const { state, dispatch } = useStoreContext()
   const { filters }: any = state
   const handleSelect = (selectedValue: string | number) => {
@@ -30,49 +30,8 @@ const CommonFilter: React.FC<Props> = ({ options, placeholder, filterKey, disabl
   };
 
   const componentRef = useRef<HTMLDivElement>(null);
-  const initSizeRef = useRef(0)
-  const hiddenRef = useRef(false)
+  const {hidden} = useCalculateResize(disableResize || false, componentRef, dispatch, {filterKey})
 
-  useLayoutEffect(() => {
-    if (disableResize) return
-    const updateFilterStatus = (isHide: boolean) => {
-      setHidden(isHide)
-      hiddenRef.current = isHide
-      dispatch({
-        type: 'updatePopupFilterList',
-        payload: {
-          type: isHide ? 'add' : 'remove',
-          key: filterKey
-        },
-      })
-    }
-    const updateSize = () => {
-      if (componentRef.current) {
-        const { right, width } = componentRef.current.getBoundingClientRect();
-        if (!initSizeRef.current) {
-          initSizeRef.current = width
-        }
-        const margin = hiddenRef.current ? 5 : 0
-        const distance = window.innerWidth - right - margin;
-        if (distance <= 300) {
-          updateFilterStatus(true)
-        } else if (initSizeRef.current && distance > (initSizeRef.current + 300)) {
-          updateFilterStatus(false)
-        }
-      }
-    };
-
-    // Update size initially
-    updateSize();
-
-    // Add resize event listener to update size
-    window.addEventListener('resize', updateSize);
-
-    return () => {
-      // Remove resize event listener
-      window.removeEventListener('resize', updateSize);
-    };
-  }, []);
   if (hidden) return (<div ref={componentRef}></div>)
   return (
     <div ref={componentRef} className={classes.container} onClick={() => setIsOpen(!isOpen)}>
